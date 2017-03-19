@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="indexstyle.css">
+	<script src="jquery-2.1.0.js"></script>
+	<title>Twoc Login</title>
+	<script>
+	
+	function attemptLogin(user, pass) {
+		$.getJSON("login.php", {user: user, pass: pass}, function(data) {
+			if (data['login']=='true') {
+				window.location.replace("home.php");
+			} else {
+				$('#errorDisplay').html(data['error']);
+			}
+		});
+	}
+	
+	$(function() {
+	
+		$('#loginButton').on('click', function() {
+			var user = $('#username').val();
+			var pass = $('#password').val();
+			attemptLogin(user,pass);
+		});
+		
+		$('#logform').keydown(function(event) {
+			if(event.keyCode == 13) {
+				event.preventDefault();
+				$('#loginButton').click();
+			}
+		});
+	
+	});
+	
+	</script>
+</head>
+
+<body>
+
+<h1>Twoc</h1>
+
+<p>
+A twitter wordcloud-generating web service. <br>
+Developed by Ives Levi Diniz Rocha.
+</p>
+<div id="login">
+<h2>Log in</h2>
+<form id="logform">
+Username: <input type="text" id="username"> <br>
+Password: <input type="password" id="password"> <br>
+<input type="button" id ="loginButton" value="Login">
+</form>
+</div>
+<div id="errorDisplay"></div>
+
+<h3>Don't have an account?</h3>
+<a href="signup.html">Sign up</a>
+
+</body>
+</html>

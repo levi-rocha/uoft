@@ -1,0 +1,12 @@
+#createButton {
+	margin-top:4px;
+	margin-bottom:16px;
+}
+
+input {
+	margin-bottom: 8px;
+}
+
+#errorDisplay {
+	color: red;
+}

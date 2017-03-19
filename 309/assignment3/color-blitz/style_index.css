@@ -1,0 +1,106 @@
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	background-repeat: no-repeat;
+	background-attachment: fixed; 
+	text-align: center;
+	background-image: radial-gradient(
+		rgba(255,255,255,0.6),
+		rgba(0,0,0,0.6)
+	);
+	animation: bga 30s infinite;
+}
+
+body h1 {
+	color: #404040;
+	animation: title 30s infinite;
+}
+
+#main {
+	text-align: center;
+	border-style: double;
+	border-width: 4px;
+	background-color: #e0e0e0;
+	width: 200px;
+	position: absolute;
+	top: 10px;
+	left: 30px;
+	padding: 0px 20px 10px 20px;
+}
+
+#connect {
+	animation: title 30s infinite;
+}
+
+#joinlink {
+	height: 48px;
+}
+
+#connected {
+	height: 80px;
+}
+
+#instructions {
+	text-align: center;
+	border-style: double;
+	border-width: 4px;
+	background-color: #f0f0f0;
+	padding: 10px 24px 10px 24px;
+	position: absolute;
+	top:10px;
+	left: 300px;
+	width: 700px;
+	border-radius: 0px;
+	font-size: 16px;
+}
+
+#type1 {
+	display: inline-block;
+	width: 320px;
+}
+
+#type2 {
+	display: inline-block;
+	width: 320px;
+}
+
+#play {
+	margin-top: 60px;
+}
+
+#play button {
+	margin: 14px 20px 20px 20px;
+	font-size: 20px;
+	color: #f0f0f0;
+	height: 60px;
+	width: 180px;
+	border-radius: 12px;
+	border-style: outset;
+	border-width: 4px;
+	background-image: radial-gradient(
+		#336699, #333399
+	);
+}
+
+@keyframes title {
+	0%   {color: blue;}
+    25%  {color: green;}
+    50%  {color: #cccc00;}
+    75%  {color: red;}
+    100% {color: blue;}
+}
+
+@keyframes bga {
+	0%   {background-color: blue;}
+    25%  {background-color: green;}
+    50%  {background-color: #cccc00;}
+    75%  {background-color: red;}
+    100% {background-color: blue;}
+}
+
+
+

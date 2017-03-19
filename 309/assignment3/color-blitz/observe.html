@@ -1,0 +1,398 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title> Color Blitz </title>
+	<link rel="stylesheet" type="text/css" href="style_blitz.css">
+	
+	<script src="jquery-2.1.0.js"></script>
+	<script>
+		
+	var correct;
+	var x1, x2, y1, y2;
+	var angle1 = 0;
+	var angle2 = Math.PI;
+	var moveradius = 150;
+	var movespeed = 0.03;
+	var figure1, figure2;
+	var color1, color2;
+	var canvas, context;
+	var moving;
+	var animated;
+	var hardcore;
+	var bgm;
+	var socket;
+	var timeLimit;
+	var flash;
+	
+	/* clear canvas and redraw figures */	
+	function generatePic() {
+		canvas = document.getElementById("mcanvas");
+		context = canvas.getContext("2d");
+		context.fillStyle = "black";
+		context.fillRect(0,0,500,500);
+		if (!flash) {
+			drawFigure(1,figure1,color1);
+			drawFigure(2,figure2,color2);
+		}
+	}
+	
+	/* draws a figure according to its number, figure type and color */
+	function drawFigure(number, figure, color) {
+		var thisx, thisy;
+		if (number == 1) {
+			thisx = x1;
+			thisy = y1;
+		} else {
+			thisx = x2;
+			thisy = y2;
+		}
+		switch(figure) {
+			case "square":
+				drawSquare(color,thisx,thisy);
+				break;
+			case "circle":
+				drawCircle(color,thisx,thisy);
+				break;
+			case "triangle":
+				drawTriangle(color,thisx,thisy);
+				break;
+			case "star":
+				drawStar(color,thisx,thisy);
+				break;
+			default:
+				drawHeart(color,thisx,thisy);
+		}
+	}
+	
+	function drawSquare(color, x, y) {
+		context.beginPath();
+		context.fillStyle = color;
+		context.fillRect(x-60,y-60,120,120);
+		context.stroke();
+	}
+	
+	function drawCircle(color, x, y) {
+		context.beginPath();
+		context.arc(x,y,60,0,2*Math.PI);
+		context.fillStyle = color;
+		context.fill();
+		context.stroke();
+	}
+	
+	
+	function drawTriangle(color, x, y) {
+		context.beginPath();
+		context.fillStyle = color;
+		context.moveTo(x,y-60);
+		context.lineTo(x-60,y+60);
+		context.lineTo(x+60,y+60);
+		context.closePath();
+		context.fill();
+		context.stroke();
+	}
+	
+	
+	function drawStar(color, x, y) {
+		mx = x-20;
+		my = y+12;
+		context.save();
+		context.beginPath();
+		context.translate(mx,my);
+		context.rotate((Math.PI*1/10));
+		for (var i = 5; i--;) {
+			context.lineTo(0,40);
+			context.translate(0,40);
+			context.rotate((Math.PI*2/10));
+			context.lineTo(0,-40);
+			context.translate(0,-40);
+			context.rotate(-(Math.PI*6/10));
+		}
+		context.lineTo(0,40);
+		context.closePath();
+		context.fillStyle=color;
+		context.fill();
+		context.stroke();
+		context.restore();
+	}
+	
+	function drawHeart(color, x, y) {
+		context.beginPath();
+		context.fillStyle=color;
+		mx = x-75;
+		my = y-70;
+		context.moveTo(75+mx,40+my);
+		context.bezierCurveTo(75+mx,37+my,70+mx,25+my,50+mx,25+my);
+		context.bezierCurveTo(20+mx,25+my,20+mx,62.5+my,20+mx,62.5+my);
+		context.bezierCurveTo(20+mx,80+my,40+mx,102+my,75+mx,120+my);
+		context.bezierCurveTo(110+mx,102+my,130+mx,80+my,130+mx,62.5+my);
+		context.bezierCurveTo(130+mx,62.5+my,130+mx,25+my,100+mx,25+my);
+		context.bezierCurveTo(85+mx,25+my,75+mx,37+my,75+mx,40+my);
+		context.fill();
+		context.stroke();
+	}
+	
+	
+	/* changes the figures' coordinates so they spin in a circle */
+	function move() {
+		x1 = 250 + Math.cos(angle1)*moveradius;
+		y1 = 250 + Math.sin(angle1)*moveradius;
+		x2 = 250 + Math.cos(angle2)*moveradius;
+		y2 = 250 + Math.sin(angle2)*moveradius;
+		angle1 += movespeed;
+		angle2 += movespeed;
+	}
+	
+	/* sets chosen figures and colors according to their given id */
+	function setFigures(id1,colorid,id2,color2id) {
+		switch (id1) {
+			case 0:
+				figure1 = "square";
+				break;
+			case 1:
+				figure1 = "circle";
+				break;
+			case 2:
+				figure1 = "triangle";
+				break;
+			case 3:
+				figure1 = "star";
+				break;
+			default:
+				figure1 = "heart";
+		}
+		switch(colorid) {
+			case 0:
+				color1= "grey";
+				break;
+			case 1:
+				color1 = "blue";
+				break;
+			case 2:
+				color1 = "green";
+				break;
+			case 3:
+				color1 = "yellow";
+				break;
+			default:
+				color1 = "red";
+		}
+		switch (id2) {
+			case 0:
+				figure2 = "square";
+				break;
+			case 1:
+				figure2 = "circle";
+				break;
+			case 2:
+				figure2 = "triangle";
+				break;
+			case 3:
+				figure2 = "star";
+				break;
+			default:
+				figure2 = "heart";
+		}
+		switch(color2id) {
+			case 0:
+				color2= "grey";
+				break;
+			case 1:
+				color2 = "blue";
+				break;
+			case 2:
+				color2 = "green";
+				break;
+			case 3:
+				color2 = "yellow";
+				break;
+			default:
+				color2 = "red";
+		}
+	}
+	
+	function updateCanvas() {
+		generatePic();
+		if (moving) {
+			move();
+		}
+	}
+
+	function stopBackground() {
+		if (animated) {
+			$("body").css("animation", "none");
+			$("body h1").css("animation", "none");
+			$('#stopbga').html("Animated");
+			$('#mcanvas').css("animation", "none");
+			animated = 0;
+		} else {
+			if (hardcore) {
+				$("body").css("animation", "bga 2s infinite");
+				$("body h1").css("animation", "title 2s infinite");
+				$("#mcanvas").css("animation", "pulse .5s infinite");
+			} else {
+				$("body").css("animation", "bga 30s infinite");
+				$("body h1").css("animation", "title 30s infinite");
+			}
+			$('#stopbga').html("Plain");
+			animated = 1;
+		}
+	}
+
+	function hcSwitch() {
+			if (hardcore) {
+				hardcore = 0;
+				movespeed = 0.03;
+				if (animated) {
+					$("body").css("animation", "bga 30s infinite");
+					$("body h1").css("animation", "title 30s infinite");
+					$('#mcanvas').css("animation", "none");
+				}
+				document.getElementById("bgm").playbackRate = 1.0;
+			} else {
+				hardcore = 1;
+				flash = 1;
+				setInterval(switchFlash, 1000);
+				movespeed = 0.18;
+				if (animated) {
+					$("body").css("animation", "bga 2s infinite");
+					$("body h1").css("animation", "title 2s infinite");
+					$("#mcanvas").css("animation", "pulse .5s infinite");
+				}
+				document.getElementById("bgm").playbackRate = 2.0;
+			}
+	}
+
+	function switchFlash() {
+		if (flash) {
+			flash = 0;
+		} else {
+			flash = 1;
+		}
+	}
+
+	function musicSwitch() {
+		if (bgm) {
+			bgm = 0;
+			$('#bgm').attr("src", "none");
+			$('#bgmbutt').html("Start music");
+		} else {
+			bgm = 1;
+			$('#bgm').attr("src", "bgm/DoubleLlamaDrift.mp3");
+			$('#bgmbutt').html("Stop music");
+		}
+	}
+
+	function giveBirthToSocket() {
+		socket = new WebSocket("ws://cslinux.utm.utoronto.ca:10020");
+
+		socket.onopen = function (event) {
+					
+		};
+
+		socket.onclose = function (event) {
+
+		};
+
+		// Received a message from the server
+		socket.onmessage = function (event) {
+					var msg = JSON.parse(event.data);
+					switch(msg.label) {
+						case 'new round':
+							showNewRound();
+							if (msg.hardcore == 1) {
+								hcSwitch();
+							}
+							if (msg.moving == 0) {
+								moving = 0;
+							}
+							if (msg.animated == 0) {
+								if (animated == 1) {
+									stopBackground();
+								}
+							}
+							figure1 = msg.figure1;
+							color1 = msg.color1;
+							figure2 = msg.figure2;
+							color2 = msg.color2;
+							break;
+						case 'game over':
+							showWinner(msg.winner, msg.score);
+							if (hardcore == 1) {
+								hcSwitch();
+							}
+							break;
+						default:
+							// Nothing
+					}		
+		};
+	}
+	
+	function showNewRound() {
+		$('#popup').html("New round!");
+		$('#popup').show();
+		setTimeout(function() {
+			$('#popup').hide();
+		},1000);
+	}
+
+	function showWinner(player, score) {
+		$('#popup').html('Game over!');
+		var cont = 'Winner is:<br>Player '+player+'<br> Score: '+score;
+		$('#scores').html(cont);
+		$('#popup').show();
+	}
+
+	$(function() {
+		moving = 1;
+		animated = 1;
+		hardcore = 0;
+		bgm = 1;
+		musicSwitch();
+		flash = 0;
+		timeLimit = 5;
+		giveBirthToSocket();
+		
+		setInterval(updateCanvas,16);
+
+		$('#bgmbutt').on('click', function() {
+			musicSwitch();
+		});
+	});
+
+	
+	</script>
+</head>
+
+<body>
+
+	<div id="main">
+
+	<h1>Color Blitz!</h1>
+
+	<div id="imgdisplay">
+	<canvas id="mcanvas" height="500" width="500">
+		Canvas not supported by browser.
+	</canvas>
+	</div>
+
+	<div id="popup">
+		Waiting...
+	</div>
+
+	<div id="scores">
+		
+	</div>
+
+	</div>
+
+	<div id="temp_ctrl">
+		<button id="bgmbutt">Stop music</button>
+	</div> 
+
+	<div id="music">
+		<audio loop id="bgm" autoplay="true" src="bgm/DoubleLlamaDrift.mp3">
+	</div>
+	
+</body>

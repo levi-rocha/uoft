@@ -1,0 +1,198 @@
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	background-repeat: no-repeat;
+	background-attachment: fixed; 
+	text-align: center;
+	background-image: radial-gradient(
+		rgba(255,255,255,0.6),
+		rgba(0,0,0,0.6)
+	);
+	animation: bga 30s infinite;
+}
+
+body h1 {
+	color: #404040;
+	animation: title 30s infinite;
+}
+
+div {
+	border-radius: 12px;
+}
+
+.pchoi {
+	display: inline-block;
+	margin: 16px;
+}
+
+#connected {
+	display: inline-block;
+	font-size: 20px;
+}
+
+#waiter {
+	text-align: center;
+	vertical-align: middle;
+	border-style: double;
+	border-width: 4px;
+	background-color: #f0f0f0; 
+	width: 560px;
+	height: 600px;
+	position: absolute;
+	top: 10px;
+	left: 470px;
+	padding: 70px 20px 10px 20px;
+}
+
+#imgdisplay {
+	background-color: black;
+	height: 500px;
+	width: 500px;
+	margin-left: 28px; 
+}
+
+#main {
+	text-align: center;
+	border-style: double;
+	border-width: 4px;
+	background-color: #f0f0f0; 
+	width: 560px;
+	height: 720px;
+	position: absolute;
+	top: 10px;
+	left: 470px;
+	padding: 0px 20px 10px 20px;
+}
+
+#new_game {
+	position: absolute;
+	top: 410px;
+	left: 650px;
+}
+
+#mcanvas {
+	border-radius: 12px;
+	background-color: black;
+}
+
+#scores {
+	text-align: center;
+	position: absolute;
+	top: 600px;
+	left: 10px;
+	width: 540px;
+	font-size: 18px;
+	padding: 0px 20px 10px 20px;
+}
+
+#popup {
+	position: absolute;
+	top: 80px;
+	left: 48px;
+	width: 500px;
+	height: 500px;
+	background-color: black;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 500px; 
+	color: white;
+	font-size: 80px; 
+}
+
+#result_display {
+	border-style: double;
+	border-width: 4px;
+	background-color: #f0f0f0; 
+	padding: 16px;
+	font-size: 18px;
+	position: absolute;
+	max-width: 300px; 
+	top: 40px;
+	left: 40px;
+}
+
+#result_display img {
+	border-radius: 12px;
+	margin-top: 10px;
+}
+
+#temp_ctrl {
+	padding: 16px;
+	text-align: center;
+	display: inline-block;
+	width: 128px;
+	position: absolute;
+	top: 670px;
+	left: 1120px;
+}
+
+button {
+	font-size: 16px;
+	color: #f0f0f0;
+	margin-top: 12px;
+	height: 52px;
+	width: 128px;
+	border-radius: 12px;
+	border-style: outset;
+	border-width: 4px;
+	background-image: radial-gradient(
+		#336699, #333399
+	);
+}
+
+#temp_player {
+	margin-top: 6px;
+	font-size: 18px;
+}
+
+#temp_player input {
+	margin-top: 6px;
+	border-radius: 12px;
+}
+
+#score {
+	font-size: 18px;
+}
+
+#settings input {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
+#new_game button {
+	font-size: 32px;
+	height: 104px;
+	width: 256px;
+	margin-top: 0px;
+}
+
+@keyframes title {
+	0%   {color: blue;}
+    25%  {color: green;}
+    50%  {color: #cccc00;}
+    75%  {color: red;}
+    100% {color: blue;}
+}
+
+@keyframes bga {
+	0%   {background-color: blue;}
+    25%  {background-color: green;}
+    50%  {background-color: #cccc00;}
+    75%  {background-color: red;}
+    100% {background-color: blue;}
+}
+
+@keyframes pulse {
+	00% {transform: scale(0.9); border-radius: 360px; border-width: 0px; 
+		border-color: green; border-style: double;}
+ 	50% {transform: scale(0.6); border-radius: 360px; border-width: 0px; 
+ 		border-color: green; border-style: double;}
+ 	100% {transform: scale(0.9); border-radius: 360px; border-width: 0px; 
+ 		border-color: green; border-style: double;}
+}
+
+

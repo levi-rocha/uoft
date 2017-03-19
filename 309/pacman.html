@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Pacman Challenge</title>
+<style type="text/css">
+#my-canvas {
+	background-color: black
+}
+</style>
+
+<script>
+
+var diff = 0;     // how wide the mouth currently is
+var delta = 5;    // how much to change per frame
+var maxDiff = 40; // how wide the mouth can poissibly be
+
+function init() {
+	setInterval(updateDrawing, 16);
+}
+
+function updateDrawing() {
+
+	// update diff which affects the size of the triangle
+	diff = diff + delta;
+	// TODO: maybe something more need to be done here...
+	if (diff == maxDiff || diff == 0) {
+		delta = -delta;
+	}
+	
+	
+	var canvas=document.getElementById("my-canvas");	
+	var context = canvas.getContext("2d");
+	
+	// Draw the background rectangle
+	context.fillStyle = "rgb(0,0,0)";
+	context.fillRect(0,0,500,500);
+
+
+	// TODO: draw a yellow circle
+	context.beginPath();
+	context.arc(250,250,200,0,2*Math.PI);
+	context.fillStyle = 'yellow';
+	context.fill();
+	context.stroke();
+
+
+	// TODO: Draw a black triangle that covers part of the 
+	// yellow circle, the size of the triangle is determined by 
+	// the variable diff.
+	// Note: check out closePath() function, which could be useful
+	context.beginPath();
+	context.moveTo(250,250);
+	context.lineTo(500,(250+diff*4));
+	context.lineTo(500,(250-diff*4));
+	context.closePath();
+	context.fillStyle = 'black';
+	context.fill();
+	context.stroke();
+
+} 
+
+</script>
+</head>
+<body onload="init()">
+<canvas id="my-canvas" height="500" width="500">Your browser doesn't support canvas.</canvas>
+</body>
+</html>
+

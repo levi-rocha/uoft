@@ -1,0 +1,76 @@
+nav {
+	
+}
+
+img {
+	height: 100px;
+	width: 100px;
+	border-radius:10px;
+}
+
+#new {
+	margin: 18px;
+	width: 480px;
+	text-align: center;
+}
+
+input {
+	font-size: 16px;
+}
+
+
+.post {
+	display: inline-block;
+	text-align: center;
+	margin: 10px 5px 10px 5px;
+	padding: 10px;
+	border-radius: 15px;
+	border-style: double;
+	font-size: 18px;
+	color: navy;
+	background: lightsteelblue;
+}
+
+.content {
+	display: block;
+	word-wrap: word-break;
+	width: 370px;
+	padding: 10px;
+	padding-top: 10px;
+	background-color: black;
+	color: white;
+	text-align: center;
+	margin: 30px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	border-radius: 30px;
+}
+
+#cloud {
+	word-wrap: word-break;
+	width: 370px;
+	padding: 10px;
+	padding-top: 10px;
+	background-color: black;
+	color: white;
+	text-align: center;
+	margin: 30px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	border-radius: 30px;
+	display: none;     
+}
+
+span {
+	margin: 0px;
+}
+
+button {
+	margin: 10px;
+	font-size: 20px;
+}
+
+#sharebutt {
+	display: none;
+}
+

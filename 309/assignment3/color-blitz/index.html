@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title> Color Blitz </title>
+	<link rel="stylesheet" type="text/css" href="style_index.css">
+	<script src="jquery-2.1.0.js"></script>
+	<script>
+
+		$(function() {
+			$('#trainingbutt').on("click", function() {
+				window.location.href = "training.html";
+			});
+
+			$('#playbutt').on("click", function() {
+				window.location.href = "host.html";
+			});
+
+		});
+
+	</script>
+</head>
+<body>
+	<div id="main">
+
+		<h1> Color Blitz! </h1>
+
+		<div id="play">
+			<button id="playbutt">Play game</button>
+			<button id="trainingbutt">Training mode</button>
+		</div>
+
+	</div>
+
+	<div id="instructions">
+		<h2> Instructions: </h2>
+
+		<p>The players connect with their phones and compete by comparing reaction times. Each player will have the same 5 colored figures to choose from during each round.</p>
+
+		<p>At the start of a round, the main screen will show a picture depicting two colored figures. Depending on the picture, a certain figure will be the right choice for that round. After a certain time limit, the players who chose the correct figure receive points (the first player to answer gets double points) and the players who chose an incorrect figure lose points.</p>
+
+		<p>At the end of the game, the player with the most points wins.</p>
+
+		<p>The 5 colored figures are:</p>
+
+		<img src='img/figures.jpg'></img>
+
+		<p>There are 2 different types of pictures:</p>
+
+		<div id="type1">
+
+			<p><b>Type 1:</b> The picture contains a figure in its correct color. In this case, the correct figure to choose is <b>the figure which is depicted in its correct color:</b></p>
+
+			<img src='img/type1.jpg'></img>
+
+		</div>
+
+		<div id="type2">
+
+			<p><b>Type 2:</b> Both figures in the picture are depicted in the wrong color. In this case, the correct figure to choose is <b>the figure that has neither its shape nor its color depicted:</b></p>
+
+			<img src='img/type2.jpg'></img>
+
+		</div>
+
+		<p>Click <b>'Play game'</b> to play online multiplayer. Have your friends visit the join link on their phone (and the observer link on their computers if playing remotely).</p>
+
+		<p>Click <b>'Training mode'</b> to play the offline single player mode. This is useful for practice.</p>
+
+	</div>
+
+</body>
+</html>

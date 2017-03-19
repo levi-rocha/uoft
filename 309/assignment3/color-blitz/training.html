@@ -1,0 +1,503 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title> Color Blitz </title>
+	<link rel="stylesheet" type="text/css" href="style_blitz.css" />
+	
+	<script src="jquery-2.1.0.js"></script>
+	<script>
+	
+	var correct;
+	var x1, x2, y1, y2;
+	var angle1 = 0;
+	var angle2 = Math.PI;
+	var moveradius = 150;
+	var movespeed = .03;
+	var figure1, figure2;
+	var color1, color2;
+	var type;
+	var canvas, context;
+	var score;
+	var moving;
+	var animated;
+	var hardcore;
+	var bgm;
+	
+	/* clear canvas and redraw figures */	
+	function generatePic() {
+		canvas = document.getElementById("mcanvas");
+		context = canvas.getContext("2d");
+		context.fillStyle = "black";
+		context.fillRect(0,0,500,500);
+		drawFigure(1,figure1,color1);
+		drawFigure(2,figure2,color2);
+	}
+	
+	/* draws a figure according to its number, figure type and color */
+	function drawFigure(number, figure, color) {
+		var thisx, thisy;
+		if (number == 1) {
+			thisx = x1;
+			thisy = y1;
+		} else {
+			thisx = x2;
+			thisy = y2;
+		}
+		switch(figure) {
+			case "square":
+				drawSquare(color,thisx,thisy);
+				break;
+			case "circle":
+				drawCircle(color,thisx,thisy);
+				break;
+			case "triangle":
+				drawTriangle(color,thisx,thisy);
+				break;
+			case "star":
+				drawStar(color,thisx,thisy);
+				break;
+			default:
+				drawHeart(color,thisx,thisy);
+		}
+	}
+	
+	function drawSquare(color, x, y) {
+		context.beginPath();
+		context.fillStyle = color;
+		context.fillRect(x-60,y-60,120,120);
+		context.stroke();
+	}
+	
+	function drawCircle(color, x, y) {
+		context.beginPath();
+		context.arc(x,y,60,0,2*Math.PI);
+		context.fillStyle = color;
+		context.fill();
+		context.stroke();
+	}
+	
+	
+	function drawTriangle(color, x, y) {
+		context.beginPath();
+		context.fillStyle = color;
+		context.moveTo(x,y-60);
+		context.lineTo(x-60,y+60);
+		context.lineTo(x+60,y+60);
+		context.closePath();
+		context.fill();
+		context.stroke();
+	}
+	
+	
+	function drawStar(color, x, y) {
+		mx = x-20;
+		my = y+12;
+		context.save();
+		context.beginPath();
+		context.translate(mx,my);
+		context.rotate((Math.PI*1/10));
+		for (var i = 5; i--;) {
+			context.lineTo(0,40);
+			context.translate(0,40);
+			context.rotate((Math.PI*2/10));
+			context.lineTo(0,-40);
+			context.translate(0,-40);
+			context.rotate(-(Math.PI*6/10));
+		}
+		context.lineTo(0,40);
+		context.closePath();
+		context.fillStyle=color;
+		context.fill();
+		context.stroke();
+		context.restore();
+	}
+	
+	function drawHeart(color, x, y) {
+		context.beginPath();
+		context.fillStyle=color;
+		mx = x-75;
+		my = y-70;
+		context.moveTo(75+mx,40+my);
+		context.bezierCurveTo(75+mx,37+my,70+mx,25+my,50+mx,25+my);
+		context.bezierCurveTo(20+mx,25+my,20+mx,62.5+my,20+mx,62.5+my);
+		context.bezierCurveTo(20+mx,80+my,40+mx,102+my,75+mx,120+my);
+		context.bezierCurveTo(110+mx,102+my,130+mx,80+my,130+mx,62.5+my);
+		context.bezierCurveTo(130+mx,62.5+my,130+mx,25+my,100+mx,25+my);
+		context.bezierCurveTo(85+mx,25+my,75+mx,37+my,75+mx,40+my);
+		context.fill();
+		context.stroke();
+	}
+	
+	
+	/* changes the figures' coordinates so they spin in a circle */
+	function move() {
+		x1 = 250 + Math.cos(angle1)*moveradius;
+		y1 = 250 + Math.sin(angle1)*moveradius;
+		x2 = 250 + Math.cos(angle2)*moveradius;
+		y2 = 250 + Math.sin(angle2)*moveradius;
+		angle1 += movespeed;
+		angle2 += movespeed;
+	}
+	
+	/* chooses one of two types of cards according to game rules */
+	function chooseType() {
+		type = Math.floor((Math.random()*2)+1);
+	}
+	
+	/* chooses figures, colors and correct choice based on type of card */
+	function chooseFigures() {
+		if (type==1) {
+			which = Math.floor((Math.random()*2)+1);
+		} else {
+			which = 0;
+		}
+		seed = Math.floor((Math.random()*4)+1);
+		id1 = Math.round((Math.random()*4));
+		colorid = id1;
+		if (type==2 || which==2) {
+			colorid = (id1+seed)%5
+		}
+		id2 = Math.round((Math.random()*4));
+		while (id2==id1 || id2==colorid) {
+			id2 = Math.round((Math.random()*4));
+		}
+		color2id = id2;
+		if (type==2 || which==1) {
+			while (color2id==colorid || color2id==id1 || color2id==id2) {
+				color2id = Math.round(Math.random()*4);
+			}
+		}
+		setFigures(id1,colorid,id2,color2id);
+		if (type==1) {
+			if (which==1) {
+				correct=id1;
+			} else {
+				correct=id2;
+			}
+		} else {
+			domain = [0,1,2,3,4];
+			index = domain.indexOf(id1);
+			domain.splice(index,1);
+			index = domain.indexOf(colorid);
+			domain.splice(index,1);
+			index = domain.indexOf(id2);
+			domain.splice(index,1);
+			index = domain.indexOf(color2id);
+			domain.splice(index,1);
+			correct=domain[0];
+		}
+	}
+	
+	/* sets chosen figures and colors according to their given id */
+	function setFigures(id1,colorid,id2,color2id) {
+		switch (id1) {
+			case 0:
+				figure1 = "square";
+				break;
+			case 1:
+				figure1 = "circle";
+				break;
+			case 2:
+				figure1 = "triangle";
+				break;
+			case 3:
+				figure1 = "star";
+				break;
+			default:
+				figure1 = "heart";
+		}
+		switch(colorid) {
+			case 0:
+				color1= "grey";
+				break;
+			case 1:
+				color1 = "blue";
+				break;
+			case 2:
+				color1 = "green";
+				break;
+			case 3:
+				color1 = "yellow";
+				break;
+			default:
+				color1 = "red";
+		}
+		switch (id2) {
+			case 0:
+				figure2 = "square";
+				break;
+			case 1:
+				figure2 = "circle";
+				break;
+			case 2:
+				figure2 = "triangle";
+				break;
+			case 3:
+				figure2 = "star";
+				break;
+			default:
+				figure2 = "heart";
+		}
+		switch(color2id) {
+			case 0:
+				color2= "grey";
+				break;
+			case 1:
+				color2 = "blue";
+				break;
+			case 2:
+				color2 = "green";
+				break;
+			case 3:
+				color2 = "yellow";
+				break;
+			default:
+				color2 = "red";
+		}
+	}
+	
+	function updateCanvas() {
+		generatePic();
+		if (moving) {
+			move();
+		}
+	}
+	
+	function newCard() {
+		chooseType();
+		chooseFigures();
+	}
+	
+	function playerChoice(choiceid) {
+		if (choiceid==correct) {
+			if (hardcore) {
+				score += 3;
+			} else {
+				score += 1;
+			}
+		}
+		setPrevPlayerChoice(1, choiceid);
+		setPrevCorrect();
+		newCard();
+		updateScore();
+	}
+
+	function setPrevPlayerChoice(player, choice) {
+		var image, playerid;
+		switch(choice) {
+			case 0:
+				image = 'img/square.jpg'; 
+				break;
+			case 1:
+				image = 'img/circle.jpg'; 
+				break;
+			case 2:
+				image = 'img/triangle.jpg'; 
+				break;
+			case 3:
+				image = 'img/star.jpg'; 
+				break;
+			default:
+				image = 'img/heart.jpg'; 
+		}
+		switch(player) {
+			case 2:
+				playerid = '#two_choice'; 
+				break;
+			case 3:
+				playerid = '#three_choice'; 
+				break;
+			case 4:
+				playerid = '#four_choice';  
+				break;
+			default:
+				playerid = '#one_choice';  
+		}
+		$(playerid).attr('src', image);
+	}
+
+	function setPrevCorrect() {
+		switch(correct) {
+			case 0:
+				$("#prev_correct").attr('src', 'img/square.jpg');
+				break;
+			case 1:
+				$("#prev_correct").attr('src', 'img/circle.jpg');
+				break;
+			case 2:
+				$("#prev_correct").attr('src', 'img/triangle.jpg');
+				break;
+			case 3:
+				$("#prev_correct").attr('src', 'img/star.jpg');
+				break;
+			default:
+				$("#prev_correct").attr('src', 'img/heart.jpg');
+		}
+	}
+	
+	function updateScore() {
+		$("#score").html("Score: "+score);
+	}
+	
+	function changeMovement() {
+		if (moving) {
+			moving = 0;
+			$("#stopbutt").html("Start moving");
+		} else {
+			moving = 1;
+			$("#stopbutt").html("Stop moving");
+		}
+	}
+
+	function stopBackground() {
+		if (animated) {
+			$("body").css("animation", "none");
+			$("body h1").css("animation", "none");
+			$('#stopbga').html("Animated");
+			$('#mcanvas').css("animation", "none");
+			animated = 0;
+		} else {
+			if (hardcore) {
+				$("body").css("animation", "bga 2s infinite");
+				$("body h1").css("animation", "title 2s infinite");
+				$("#mcanvas").css("animation", "pulse .5s infinite");
+			} else {
+				$("body").css("animation", "bga 30s infinite");
+				$("body h1").css("animation", "title 30s infinite");
+			}
+			$('#stopbga').html("Plain");
+			animated = 1;
+		}
+	}
+
+	function hcSwitch() {
+			if (hardcore) {
+				hardcore = 0;
+				movespeed = .03;
+				if (animated) {
+					$("body").css("animation", "bga 30s infinite");
+					$("body h1").css("animation", "title 30s infinite");
+					$('#mcanvas').css("animation", "none");
+				}
+				document.getElementById("bgm").playbackRate = 1.0;
+			} else {
+				hardcore = 1;
+				movespeed = .18;
+				if (animated) {
+					$("body").css("animation", "bga 2s infinite");
+					$("body h1").css("animation", "title 2s infinite");
+					$("#mcanvas").css("animation", "pulse .5s infinite");
+				}
+				document.getElementById("bgm").playbackRate = 2.0;
+			}
+	}
+
+	function musicSwitch() {
+		if (bgm) {
+			bgm = 0;
+			$('#bgm').attr("src", "none");
+			$('#bgmbutt').html("Start music");
+		} else {
+			bgm = 1;
+			$('#bgm').attr("src", "bgm/DoubleLlamaDrift.mp3");
+			$('#bgmbutt').html("Stop music");
+		}
+	}
+
+
+	$(function() {
+		score = 0;
+		moving = 1;
+		animated = 1;
+		hardcore = 0;
+		bgm = 1;
+		updateScore();
+		newCard();
+		setInterval(updateCanvas,16);
+		$("#newbutt").on("click", function() {
+			newCard();
+		});
+		$("#sqrbutt").on("click", function() {
+			playerChoice(0);
+		});
+		$("#cirbutt").on("click", function() {
+			playerChoice(1);
+		});
+		$("#tributt").on("click", function() {
+			playerChoice(2);
+		});
+		$("#starbutt").on("click", function() {
+			playerChoice(3);
+		});
+		$("#hearbutt").on("click", function() {
+			playerChoice(4);
+		});
+		$("#stopbutt").on("click", function() {
+			changeMovement();
+		});
+		$("#stopbga").on("click", function () {
+			stopBackground();
+		});
+		$('#hcbutt').on("click", function () {
+			hcSwitch();
+		});
+		$('#bgmbutt').on('click', function() {
+			musicSwitch();
+		});
+	});
+	
+	</script>
+</head>
+
+<body>
+
+	<div id="main">
+
+	<h1>Color Blitz!</h1>
+
+	<div id="imgdisplay">
+	<canvas id="mcanvas" height="500" width="500">
+		Canvas not supported by browser.
+	</canvas>
+	</div>
+	
+	<div id="timer"></div>
+	
+	<div id="temp_player">
+			Which is the correct figure? <br>
+			<input id="sqrbutt" type="image" src="img/square.jpg" />
+			<input id="cirbutt" type="image" src="img/circle.jpg" />
+			<input id="tributt" type="image" src="img/triangle.jpg" />
+			<input id="starbutt" type="image" src="img/star.jpg" />
+			<input id="hearbutt" type="image" src="img/heart.jpg" />
+	</div>
+
+	</div>
+
+	<div id="temp_ctrl">
+		<button id="newbutt">New card</button>
+		<button id="stopbutt">Stop moving</button>
+		<button id="stopbga">Plain</button>
+		<button id="hcbutt">Hardcore mode</button>
+		<button id="bgmbutt">Stop music</button>
+	</div> 
+
+	<div id="result_display">
+		<h2> Previous round: </h2>
+		<h4>Correct figure was: </h4>
+		<img id="prev_correct" src=""></img><br>
+		<h3>Players chose: </h3>
+		Player 1: <br>
+		<img id="one_choice" src=""></img> <br>
+		<div id="score"></div>
+	</div>
+
+	<div id="music">
+		<audio loop id="bgm" autoplay="true" src="bgm/DoubleLlamaDrift.mp3">
+	</div>
+	
+	
+	
+</body>

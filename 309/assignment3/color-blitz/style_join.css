@@ -1,0 +1,62 @@
+body {
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	background-color: black;
+}
+
+#popup {
+	position: absolute;
+	text-align: center;
+	font-size: 200%;
+	top: 0%;
+	left: 0%;
+	height: 100%;
+	width: 100%;
+	background-color: white;
+}
+
+h1 {
+	color: white;
+	font-size: 180%; 
+	padding: 0%;
+}
+
+input {
+	position: absolute;
+	height: 26%;
+	width: 32%;
+	border-radius: 5%;
+	border-width: 1%;
+	border-style: solid;
+}
+
+#sqrbutt {
+	top: 15%;
+	left: 0%;
+	border-color: gray;
+}
+
+#cirbutt {
+	top: 15%;
+	right: 0%;
+	border-color: blue;
+}
+
+#tributt {
+	top: 42%;
+	left: 33%;
+	border-color: green;
+}
+
+#starbutt {
+	top: 70%;
+	left: 0%;
+	border-color: yellow;
+}
+
+#hearbutt {
+	top: 70%;
+	right: 0%;
+	border-color: red;
+}

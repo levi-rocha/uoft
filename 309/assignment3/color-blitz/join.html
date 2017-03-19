@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+	
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Color Blitz!</title>
+	<link href="style_join.css" rel="stylesheet" type="text/css" />
+	<script src="jquery-2.1.0.js"></script>
+	<script type="text/javascript">
+		
+		var socket;
+		var id;
+		var sent = 0;
+
+		function giveBirthToSocket() {
+			socket = new WebSocket("ws://cslinux.utm.utoronto.ca:10020");
+
+			socket.onopen = function (event) {
+					
+			};
+
+			socket.onclose = function (event) {
+
+			};
+
+			// Received a message from the server
+			socket.onmessage = function (event) {
+					var msg = JSON.parse(event.data);
+					switch(msg.label) {
+						case 'accepted player connection':
+							if (sent) {
+								if (id<0) {
+									id = msg.pid;
+									$('#popup').html("Connected as Player "+id+". Waiting for game to start");
+								}
+							}
+							break;
+						case 'abort player connection':
+							if (id < 0) {
+								window.location.href = "error/lobby_full.html";
+							}
+							break;
+						case 'started game':
+							showGame();
+							break;
+						case 'new round':
+							enableControls();
+							break;
+						case 'round over':
+							disableControls();
+							break;
+						case 'game over':
+							disableControls();
+							var winner = msg.winner;
+							if (winner == id) {
+								$('#popup').html("You won! <br>Your score was: "+msg.score+".");
+							} else {
+								$('#popup').html("You lost to: <br>Player "+msg.winner+". <br>Their score was: "+msg.score+".");
+							}
+							showPopup();
+							break;
+						default:
+							// Nothing
+					}		
+			}
+			setTimeout(function() {
+				socket.send(JSON.stringify({'label': 'player connected'}));
+				sent = 1;
+			}, 2000);
+		}
+
+		function showPopup() {
+			$('#popup').show();
+			$('#player').hide();
+			$('#controls').hide();
+		}
+
+		function showGame() {
+			$('#popup').hide();
+			$('#player').show();
+			$('#controls').show();
+		}
+
+		function enableControls() {
+			$("input").prop('disabled', false);
+		}
+
+		function disableControls() {
+			$("input").prop('disabled', true);
+		}
+
+		function sendChoice(choice) {
+			disableControls();
+			socket.send(JSON.stringify({
+				'label': 'player choice',
+				'pid': id,
+				'choice': choice 
+			}));
+		}
+
+		$(function() {
+			id = -1;
+			showPopup();
+			giveBirthToSocket();
+			$('#sqrbutt').on('click', function() {
+				sendChoice(0);
+			});
+			$('#cirbutt').on('click', function() {
+				sendChoice(1);
+			});
+			$('#tributt').on('click', function() {
+				sendChoice(2);
+			});
+			$('#starbutt').on('click', function() {
+				sendChoice(3);
+			});
+			$('#hearbutt').on('click', function() {
+				sendChoice(4);
+			});
+
+		});
+
+	</script>
+
+</head>
+<body>
+
+	<div id="player">
+		<h1> Player 1 </h1>
+	</div>
+
+	<div id="controls">
+		<input id="sqrbutt" type="image" src="img/square.jpg" />
+		<input id="cirbutt" type="image" src="img/circle.jpg" />
+		<input id="tributt" type="image" src="img/triangle.jpg" />
+		<input id="starbutt" type="image" src="img/star.jpg" />
+		<input id="hearbutt" type="image" src="img/heart.jpg" />
+	</div>
+
+	<div id="popup">
+		Connecting...
+	</div>
+
+</body>
+</html>

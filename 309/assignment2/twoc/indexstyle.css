@@ -1,0 +1,32 @@
+#login {
+	display: block;
+	width: 300px;	
+}
+
+h2 {
+	margin-bottom:10px;
+}
+
+
+input {
+	margin-bottom: 8px;
+}
+
+
+#loginButton {
+	margin: 5px;
+	font-size: 16px;
+}
+
+h3 {
+	margin-top: 15px;
+	margin-bottom: 5px;
+}
+
+a {
+	font-size: 18px;
+}
+
+#errorDisplay {
+	color: red;
+}

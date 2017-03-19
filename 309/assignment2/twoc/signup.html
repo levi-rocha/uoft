@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title> Twoc Sign-up </title>
+	<link rel="stylesheet" type="text/css" href="signupstyle.css">
+	<script src="jquery-2.1.0.js"></script>
+	<script>
+	
+	function verifyAndCreate(user,pass) {
+		var name = user.toLowerCase();
+		var firstchar = name.substr(0,1);
+		var patt = /^[a-zA-Z]$/;
+		if(!patt.test(firstchar)) {
+			$('#errorDisplay').html("first character of username must be a letter!");
+			return false;
+		}
+		patt = /^[a-zA-z0-9_]{3,18}$/;
+		if (!patt.test(name)) {
+			$('#errorDisplay').html("username must 3 to 18 characters and include only letters, numbers and underscores!");
+			return false;
+		}
+		$.getJSON("verifyUsername.php", {username: name}, function(data) {
+			if (data['available']=='false') {
+				$('#errorDisplay').html("username is taken");
+			} else {
+				if (verifyPassword(pass)) {
+					$('#verified').hide();
+					$('#vsuccess').html("Verification succesful!");
+					$('#errorDisplay').html("");
+					$('#sendbutt').show();
+				}
+			}
+		});
+		
+	}
+	
+	function verifyPassword(pass) {
+		if(pass.length < 6 || pass.length > 18) {
+			$('#errorDisplay').html("password must have between 6 and 18 characters!");
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	$(function() {
+		$('#sendbutt').hide();		
+		$('#createButton').on('click', function() {
+			var username = $('#login').val();
+			var password = $('#pass').val();
+			verifyAndCreate(username,password);
+		});
+		
+		$('#verified').keydown(function(event) {
+			if(event.keyCode == 13) {
+				event.preventDefault();
+				$('#createButton').click();
+			}
+		});
+	
+	});	
+	</script>
+</head>
+
+<body>
+
+<h1>Sign-up to Twoc</h1>
+<form action="createAccount.php" enctype="multipart/form-data" method="post">
+	<div id="verified">
+	Username: <input type="text" name='login' id="login" /><br>
+	Password: <input type="password" name='pass' id="pass" /><br>
+	<input id="createButton" type="button" value="Verify username and password"  /><br>
+	</div>
+	<div id="vsuccess"></div>
+	<input type="hidden" name="MAX_FILE_SIZE" value="51200" />
+	Upload profile picture (leave blank for default picture): <br><br>
+	<input type="file" name="file" id="file" /> <br>
+	<input id="sendbutt" type="submit" value="Sign up!" /> <br>
+</form>
+
+<div id="errorDisplay"></div>
+
+<a href="index.html">Back to login page</a>
+
+</body>
+</html>
